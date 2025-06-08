@@ -40,8 +40,6 @@ router.post("/", async (req: Request, res: Response) => {
       res.status(200).send("password correct");
     }
     if (data.email) {
-      console.log("being called");
-
       const isEmailCorrect = doesEmailMatchHash(data.email, user.email_hash);
       if (!isEmailCorrect) {
         res.status(403).send("email incorrect");
