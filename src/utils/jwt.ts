@@ -9,14 +9,14 @@ dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET!;
 
-export function sign(data: any, expirationLength?: number) {
+export function signJwt(data: any, expirationLength?: number) {
   const options = expirationLength
     ? { expiresIn: expirationLength }
     : undefined;
   return jwt.sign(data, JWT_SECRET, options);
 }
 
-export function decode(token: string):
+export function decodeJwt(token: string):
   | JwtPayload
   | {
       valid: boolean;
