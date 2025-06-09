@@ -7,29 +7,44 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model FixedVesets {
-  id                                     Int      @id @default(autoincrement())
-  userId                                 String   @unique
-  period1Id                              Int      @unique
-  period2Id                              Int      @unique
-  period3Id                              Int      @unique
-  expectedDate                           DateTime
-  onah                                   Onah
-  createdAt                              DateTime @default(now())
-  Periods_FixedVesets_period1IdToPeriods Periods  @relation("FixedVesets_period1IdToPeriods", fields: [period1Id], references: [id])
-  Periods_FixedVesets_period2IdToPeriods Periods  @relation("FixedVesets_period2IdToPeriods", fields: [period2Id], references: [id])
-  Periods_FixedVesets_period3IdToPeriods Periods  @relation("FixedVesets_period3IdToPeriods", fields: [period3Id], references: [id])
-  Users                                  Users    @relation(fields: [userId], references: [id])
-}
-
-model Locations {
-  location String
-  code     Int    @unique(map: "Location_code_key")
+model Users {
+  id              String            @id @unique @default(uuid())
+  name_encrypt    String
+  name_iv         String
+  name_tag        String
+  email_encrypt   String
+  email_iv        String
+  email_tag       String
+  email_hash      String            @unique
+  password_hash   String
+  fixed_veset     FixedVesets?
+  options         Options?
+  payments        Payments[]
+  periods         Periods[]
+  potential_veset PotentialVesets[]
 }
 
 model Options {
   userId String @id
-  Users  Users  @relation(fields: [userId], references: [id])
+  user   Users  @relation(fields: [userId], references: [id])
+}
+
+model Periods {
+  id                   Int               @id @default(autoincrement())
+  userId               String
+  input_date_time      DateTime
+  hebrew_day           Int
+  hebrew_month         Int
+  hebrew_year          Int
+  onah                 Onah
+  type                 Type
+  notes                String?
+  created_at           DateTime          @default(now())
+  period_fixed_veset_1 FixedVesets?      @relation("FixedVesetPeriod1")
+  period_fixed_veset_2 FixedVesets?      @relation("FixedVesetPeriod2")
+  period_fixed_veset_3 FixedVesets?      @relation("FixedVesetPeriod3")
+  user                 Users             @relation(fields: [userId], references: [id])
+  PotentialVeset       PotentialVesets[] @relation("VesetBase")
 }
 
 model Payments {
@@ -41,26 +56,8 @@ model Payments {
   provider    String?
   providerRef String?
   createdAt   DateTime      @default(now())
-  updatedAt   DateTime
-  Users       Users         @relation(fields: [userId], references: [id])
-}
-
-model Periods {
-  id                                         Int               @id @default(autoincrement())
-  userId                                     String
-  input_date_time                            DateTime
-  hebrew_day                                 Int
-  hebrew_month                               Int
-  hebrew_year                                Int
-  onah                                       Onah
-  type                                       Type
-  notes                                      String?
-  created_at                                 DateTime          @default(now())
-  FixedVesets_FixedVesets_period1IdToPeriods FixedVesets?      @relation("FixedVesets_period1IdToPeriods")
-  FixedVesets_FixedVesets_period2IdToPeriods FixedVesets?      @relation("FixedVesets_period2IdToPeriods")
-  FixedVesets_FixedVesets_period3IdToPeriods FixedVesets?      @relation("FixedVesets_period3IdToPeriods")
-  Users                                      Users             @relation(fields: [userId], references: [id])
-  PotentialVesets                            PotentialVesets[]
+  updatedAt   DateTime      @updatedAt
+  user        Users         @relation(fields: [userId], references: [id])
 }
 
 model PotentialVesets {
@@ -72,30 +69,46 @@ model PotentialVesets {
   onah             Onah
   notes            String?
   createdAt        DateTime  @default(now())
-  Periods          Periods   @relation(fields: [periodId], references: [id])
-  Users            Users     @relation(fields: [userId], references: [id])
+  basisPeriod      Periods   @relation("VesetBase", fields: [periodId], references: [id])
+  user             Users     @relation(fields: [userId], references: [id])
 }
 
-model Users {
-  id              String            @id @default(uuid())
-  name_encrypt    String
-  name_iv         String
-  name_tag        String
-  email_encrypt   String
-  email_iv        String
-  email_tag       String
-  email_hash      String            @unique
-  password_hash   String
-  FixedVesets     FixedVesets?
-  Options         Options?
-  Payments        Payments[]
-  Periods         Periods[]
-  PotentialVesets PotentialVesets[]
+model FixedVesets {
+  id           Int      @id @default(autoincrement())
+  userId       String   @unique
+  period1Id    Int      @unique
+  period2Id    Int      @unique
+  period3Id    Int      @unique
+  expectedDate DateTime
+  onah         Onah
+  createdAt    DateTime @default(now())
+  period1      Periods  @relation("FixedVesetPeriod1", fields: [period1Id], references: [id])
+  period2      Periods  @relation("FixedVesetPeriod2", fields: [period2Id], references: [id])
+  period3      Periods  @relation("FixedVesetPeriod3", fields: [period3Id], references: [id])
+  user         Users    @relation(fields: [userId], references: [id])
+}
+
+model Locations {
+  location String
+  code     Int    @unique(map: "Location_code_key")
+}
+
+model OneTimePassword{
+  id Int @id @default(autoincrement())
+userId  String
+
 }
 
 enum Onah {
   day
   night
+}
+
+enum Type {
+  period
+  staining
+  birth
+  miscarriage
 }
 
 enum PaymentMethod {
@@ -109,13 +122,6 @@ enum PaymentStatus {
   fail
   pending
   cancelled
-}
-
-enum Type {
-  period
-  staining
-  birth
-  miscarriage
 }
 
 enum VesetType {
