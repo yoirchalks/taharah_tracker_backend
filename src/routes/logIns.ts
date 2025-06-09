@@ -4,6 +4,8 @@ import { prisma } from "../utils/prismaClient.js";
 import { unHash } from "../utils/hashPassword.js";
 import { doesEmailMatchHash } from "../utils/hashEmail.js";
 import { signJwt } from "../utils/jwt.js";
+import createOtp from "../utils/generateOtp.js";
+import sendEmail from "../utils/sendEmail.js";
 
 const router = express.Router();
 
@@ -55,7 +57,16 @@ router.post("/", async (req: Request, res: Response) => {
         res.status(403).send("email incorrect");
         return;
       }
-      //TODO:add email validation logic. send 1tp to users email, save in db for 5 min. forward user to login page via link in email.
+      //TODO:forward user to front-end login page via link in email.
+
+      const Otp = createOtp();
+      prisma.oneTimePasswords.create({
+        data: {
+          userId: userId,
+          OTP: Otp,
+        },
+      });
+      sendEmail(data.email, Otp);
       res.status(200).send("email correct");
     }
   } catch (error) {
