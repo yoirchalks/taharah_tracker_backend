@@ -3,6 +3,7 @@ import logInsValidators from "../validators/logIns.validators.js";
 import { prisma } from "../utils/prismaClient.js";
 import { unHash } from "../utils/hashPassword.js";
 import { doesEmailMatchHash } from "../utils/hashEmail.js";
+import { signJwt } from "../utils/jwt.js";
 
 const router = express.Router();
 
@@ -25,10 +26,10 @@ router.post("/", async (req: Request, res: Response) => {
       res.status(404).send(`user with id ${userId} not found`);
       return;
     }
+
     if (password) {
       if (typeof data.password === "number") {
         console.log("using 1tp");
-        //TODO: add 1tp logic
         return;
       }
       const isPasswordValid = await unHash(user.password_hash, data.password);
@@ -36,8 +37,17 @@ router.post("/", async (req: Request, res: Response) => {
         res.status(403).send("password incorrect");
         return;
       }
-      //TODO: add jwt logic. send jwt here
-      res.status(200).send("password correct");
+
+      const jwt = signJwt({ userId });
+      res
+        .cookie("authentication", jwt, {
+          secure: true,
+          sameSite: "strict",
+          path: "/",
+          httpOnly: true,
+        })
+        .status(204)
+        .send();
     }
     if (data.email) {
       const isEmailCorrect = doesEmailMatchHash(data.email, user.email_hash);
