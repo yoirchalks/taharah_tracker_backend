@@ -1,9 +1,9 @@
-import jwt, {
-  JsonWebTokenError,
-  JwtPayload,
-  TokenExpiredError,
-} from "jsonwebtoken";
+import pkg from "jsonwebtoken";
 import dotenv from "dotenv";
+
+import type { JwtPayload } from "jsonwebtoken";
+
+const { JsonWebTokenError, TokenExpiredError, sign, verify } = pkg;
 
 dotenv.config();
 
@@ -13,7 +13,7 @@ export function signJwt(data: any, expirationLength?: number) {
   const options = expirationLength
     ? { expiresIn: expirationLength }
     : undefined;
-  return jwt.sign(data, JWT_SECRET, options);
+  return sign(data, JWT_SECRET, options);
 }
 
 export function decodeJwt(token: string):
@@ -23,7 +23,7 @@ export function decodeJwt(token: string):
       reason: string;
     } {
   try {
-    return jwt.verify(token, JWT_SECRET) as JwtPayload;
+    return verify(token, JWT_SECRET) as JwtPayload;
   } catch (err: unknown) {
     if (err instanceof JsonWebTokenError) {
       return { valid: false, reason: "invalid token provided" };
