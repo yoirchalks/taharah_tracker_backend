@@ -61,7 +61,7 @@ router.post("/", async (req: Request, res: Response) => {
       //TODO:forward user to front-end login page via link in email.
 
       const Otp = createOtp();
-      await prisma.otp.create({
+      await prisma.otps.create({
         data: {
           userId: userId,
           OTP: Otp,
@@ -72,7 +72,7 @@ router.post("/", async (req: Request, res: Response) => {
     }
 
     if (data.otp) {
-      const storedOtp = await prisma.otp.findFirst({
+      const storedOtp = await prisma.otps.findFirst({
         where: {
           userId: userId,
         },
@@ -98,6 +98,17 @@ router.post("/", async (req: Request, res: Response) => {
         res.status(401).send("OTP incorrect");
         return;
       }
+      if (storedOtp.used === true) {
+        res.status(403).send("OTP already used");
+      }
+      await prisma.otps.update({
+        where: {
+          id: storedOtp.id,
+        },
+        data: {
+          used: true,
+        },
+      });
       const jwt = signJwt({ userId });
       res
         .cookie("authentication", jwt, {
