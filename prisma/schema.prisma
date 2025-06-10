@@ -99,6 +99,7 @@ model Otps {
   userId  String
   OTP String
   iat DateTime @default(now())
+  used Boolean @default(false)
   user Users @relation(fields: [userId], references: [id])
 }
 
