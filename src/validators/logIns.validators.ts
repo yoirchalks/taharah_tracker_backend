@@ -5,7 +5,7 @@ const postSchema = Joi.object({
   password: Joi.string().min(8).max(25),
   email: Joi.string().email(),
   otp: Joi.string().min(6).max(6),
-}).or("password", "email");
+}).xor("password", "email", "otp");
 
 export default function (data: { email?: string; password?: string }) {
   return postSchema.validate(data);
