@@ -12,8 +12,7 @@ export default async function sendEmail(emailAddress: string, OTP: string) {
     "utf8"
   );
 
-  const updatedHtml = emailTemplate.replace("{{OTP}}", "123456");
-  console.log(process.env.EMAIL_SECRET);
+  const updatedHtml = emailTemplate.replace("{{OTP}}", OTP);
   let transport = nodemailer.createTransport({
     service: "gmail",
     auth: {
