@@ -2,7 +2,7 @@ import express, { Request, Response } from "express";
 import logInsValidators from "../validators/logIns.validators.js";
 import { prisma } from "../utils/prismaClient.js";
 import { unHash } from "../utils/hashPassword.js";
-import { doesEmailMatchHash } from "../utils/hashEmail.js";
+import hashEmail, { doesEmailMatchHash } from "../utils/hashEmail.js";
 import { signJwt } from "../utils/jwt.js";
 import createOtp from "../utils/generateOtp.js";
 import sendEmail from "../utils/sendEmail.js";
@@ -16,16 +16,16 @@ router.post("/", async (req: Request, res: Response) => {
     res.status(400).send(result.error.details[0].message);
     return;
   }
-  const userId: string = data.userId;
+  const hashedEmail = hashEmail(data.email);
   const password = data.password;
   try {
     const user = await prisma.users.findUnique({
       where: {
-        id: userId,
+        email_hash: hashedEmail,
       },
     });
     if (!user) {
-      res.status(404).send(`user with id ${userId} not found`);
+      res.status(404).send(`no user registered with email ${data.email}`);
       return;
     }
 
@@ -36,7 +36,7 @@ router.post("/", async (req: Request, res: Response) => {
         return;
       }
 
-      const jwt = signJwt({ userId });
+      const jwt = signJwt({ user: user.id });
       res
         .cookie("authentication", jwt, {
           secure: true,
@@ -48,29 +48,28 @@ router.post("/", async (req: Request, res: Response) => {
         .send();
     }
 
-    if (data.email) {
-      const isEmailCorrect = doesEmailMatchHash(data.email, user.email_hash);
-      if (!isEmailCorrect) {
-        res.status(403).send("email incorrect");
-        return;
-      }
+    if (data.requestingOtp) {
+      // const isEmailCorrect = doesEmailMatchHash(data.email, user.email_hash);
+      // if (!isEmailCorrect) {
+      //   res.status(403).send("email incorrect");
+      //   return;
+      // } should not need this b/c were identifying user based of email
       //TODO:forward user to front-end login page via link in email.
 
       const Otp = createOtp();
-      await prisma.otps.create({
+      const generatedOtp = await prisma.otps.create({
         data: {
-          userId: userId,
           OTP: Otp,
         },
       });
       sendEmail(data.email, Otp);
-      res.status(200).send("email correct");
+      res.status(200).send(generatedOtp);
     }
 
     if (data.otp) {
       const storedOtp = await prisma.otps.findFirst({
         where: {
-          userId: userId,
+          userId: user.id,
         },
         orderBy: {
           iat: "desc",

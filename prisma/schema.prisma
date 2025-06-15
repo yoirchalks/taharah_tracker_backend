@@ -22,7 +22,6 @@ model Users {
   payments        Payments[]
   periods         Periods[]
   potential_veset PotentialVesets[]
-  OTP Otps[]
 }
 
 model Options {
@@ -95,12 +94,10 @@ model Locations {
 }
 
 model Otps {
-  id Int @id @default(autoincrement())
-  userId  String
+  id String @id @default(uuid())
   OTP String
   iat DateTime @default(now())
   used Boolean @default(false)
-  user Users @relation(fields: [userId], references: [id])
 }
 
 enum Onah {
