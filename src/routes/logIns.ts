@@ -57,6 +57,7 @@ router.post("/", async (req: Request, res: Response) => {
       const generatedOtp = await prisma.otps.create({
         data: {
           OTP: Otp,
+          userId: user.id,
         },
       });
       sendEmail(data.email, Otp);
