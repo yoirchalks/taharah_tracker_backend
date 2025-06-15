@@ -10,6 +10,6 @@ const schema = Joi.object({
   }),
 });
 
-export default function (data: any, isOtp: boolean) {
+export default function (data: any) {
   return schema.validate(data);
 }
