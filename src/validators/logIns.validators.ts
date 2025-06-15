@@ -1,12 +1,20 @@
 import Joi from "joi";
 
-const postSchema = Joi.object({
-  password: Joi.string().min(8).max(25),
+const schema = Joi.object({
   email: Joi.string().email().required(),
-  requestingOtp: Joi.boolean(),
-  otp: Joi.string().min(6).max(6),
-}).xor("password", "otp", "requestingOtp");
+  requestingOtp: Joi.boolean().default(false),
+  password: Joi.when("requestingOtp", {
+    is: true,
+    then: Joi.forbidden(),
+    otherwise: Joi.string().min(8).max(25).required(),
+  }),
+});
 
-export default function (data: { email?: string; password?: string }) {
-  return postSchema.validate(data);
+const otpSchema = Joi.object({
+  UUID: Joi.string().required(),
+  OTP: Joi.string().min(6).max(6),
+});
+
+export default function (data: any, isOtp: boolean) {
+  return isOtp ? otpSchema.validate(data) : schema.validate(data);
 }
