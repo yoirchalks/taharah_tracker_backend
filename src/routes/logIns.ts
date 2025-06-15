@@ -30,10 +30,6 @@ router.post("/", async (req: Request, res: Response) => {
     }
 
     if (password) {
-      if (typeof data.password === "number") {
-        console.log("using 1tp");
-        return;
-      }
       const isPasswordValid = await unHash(user.password_hash, data.password);
       if (!isPasswordValid) {
         res.status(403).send("password incorrect");
