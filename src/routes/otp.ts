@@ -1,7 +1,7 @@
-import express, { Request, Response } from "express";
+import express from "express";
+import type { Request, Response } from "express";
 import { prisma } from "../utils/prismaClient.js";
 import otpValidator from "../validators/otp.validators.js";
-import { DatabaseSync } from "node:sqlite";
 import { signJwt } from "../utils/jwt.js";
 
 const router = express.Router();

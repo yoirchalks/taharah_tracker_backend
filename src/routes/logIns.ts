@@ -1,4 +1,5 @@
-import express, { Request, Response } from "express";
+import express from "express";
+import type { Request, Response } from "express";
 import logInsValidators from "../validators/logIns.validators.js";
 import { prisma } from "../utils/prismaClient.js";
 import { unHash } from "../utils/hashPassword.js";
