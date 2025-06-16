@@ -13,15 +13,16 @@ router.post("/", async (req: Request, res: Response) => {
     res.status(400).send(result.error.details[0].message);
     return;
   }
-  const { UUID, IAT, used, OTP } = req.body;
+
+  const { id, userId, OTP } = req.body;
 
   const storedOtp = await prisma.otps.findUnique({
     where: {
-      id: UUID,
+      id,
     },
   });
   if (!storedOtp) {
-    res.status(404).send(`no OTP found with id ${UUID}`);
+    res.status(404).send(`no OTP found with id ${id}`);
     return;
   }
   if (storedOtp.OTP !== OTP) {
@@ -34,9 +35,13 @@ router.post("/", async (req: Request, res: Response) => {
   if (storedOtp.used === true) {
     res.status(403).send(`OTP already used`);
   }
+  if (storedOtp.userId !== userId) {
+    res.status(409).send(`otp ${OTP} not associated with user ${userId}`);
+    return;
+  }
   const updatedOtp = await prisma.otps.update({
     where: {
-      id: UUID,
+      id,
     },
     data: {
       used: true,
