@@ -1,8 +1,14 @@
+import axios from "axios";
 import express from "express";
-import type { Request, Response } from "express";
-import { prisma } from "../utils/prismaClient.js";
+
 import authMiddleware from "../middlewares/jwt.middleware.js";
 import getPrismaUserById from "../utils/getPrismaUser.js";
+import pkg from "hebrew-date";
+const HebrewDate = pkg.HebrewDate;
+import { prisma } from "../utils/prismaClient.js";
+import validator from "../validators/periods.validators.js";
+
+import type { Request, Response } from "express";
 
 const router = express.Router();
 
@@ -40,9 +46,28 @@ router.get("/:id", authMiddleware, async (req: Request, res: Response) => {
 });
 
 router.post("/", authMiddleware, async (req: Request, res: Response) => {
+  const result = validator(req.body, "post");
+  if (result.error) {
+    res.status(400).send(result.error.details[0].message);
+  }
+  const { date, time, type } = req.body;
+
   const userId = req.userId;
   const user = await getPrismaUserById(userId);
+  const userOptions = await prisma.options.findUnique({
+    where: {
+      userId: userId,
+    },
+  });
+  if (!userOptions || !userOptions.location) {
+    res.status(422).send(`user must have options and location set to proceed.`);
+  }
+  const hebrewDate = new HebrewDate(date);
+  console.log(hebrewDate);
+  res.send();
 });
+
+//TODO: replace 403 codes for 401 with invalid JWTs
 
 router.delete("/:id", async (req: Request, res: Response) => {
   const userId = req.userId;
