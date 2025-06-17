@@ -13,5 +13,5 @@ export default function routes(app: Application): void {
   app.use("/api/logIns", logInsRouter);
   app.use("/api/otp", otpRouter);
   app.use("/api/periods", periodsRouter);
-  app.use("api/options", optionsRouter);
+  app.use("/api/options", optionsRouter);
 }
