@@ -26,8 +26,10 @@ model Users {
 }
 
 model Options {
-  userId String @id
+  userId String @id @unique
   user   Users  @relation(fields: [userId], references: [id])
+  location String
+  receiveAlerts Boolean
 }
 
 model Periods {
@@ -38,7 +40,7 @@ model Periods {
   hebrew_month         Int
   hebrew_year          Int
   onah                 Onah
-  type                 Type
+  type                 PeriodType
   notes                String?
   created_at           DateTime          @default(now())
   period_fixed_veset_1 FixedVesets?      @relation("FixedVesetPeriod1")
@@ -108,7 +110,7 @@ enum Onah {
   night
 }
 
-enum Type {
+enum PeriodType {
   period
   staining
   birth
