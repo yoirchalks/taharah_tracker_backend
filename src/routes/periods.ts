@@ -42,9 +42,43 @@ router.get("/:id", authMiddleware, async (req: Request, res: Response) => {
   res.send(period);
 });
 
-router.post("/", async (req: Request, res: Response) => {});
+router.post("/", authMiddleware, async (req: Request, res: Response) => {});
 
-router.delete("/:id", async (req: Request, res: Response) => {});
+router.delete("/:id", async (req: Request, res: Response) => {
+  const userId = req.userId;
+  const periodId = req.params.id;
+  const user = await prisma.users.findUnique({
+    where: {
+      id: userId,
+    },
+  });
+  if (!user) {
+    res.status(404).send(`no user found with id of ${userId}`);
+    return;
+  }
+  const period = await prisma.periods.findUnique({
+    where: {
+      id: parseInt(periodId),
+    },
+  });
+  if (!period) {
+    res.status(404).send(`no period with id ${periodId} found`);
+    return;
+  }
+  if (period.userId !== userId) {
+    res
+      .status(403)
+      .send(
+        `period with id ${periodId} doesn't belong to user with id ${userId}`
+      );
+    return;
+  }
+  await prisma.periods.delete({
+    where: {
+      id: parseInt(periodId),
+    },
+  }); //TODO: add logic here to recalculate and update any vestos that where dependant on this period.
+});
 
 router.put("/:id", async (req: Request, res: Response) => {});
 
