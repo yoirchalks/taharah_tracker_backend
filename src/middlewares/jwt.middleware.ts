@@ -1,16 +1,7 @@
 import type { Request, Response, NextFunction } from "express";
 import { decodeJwt } from "../utils/jwt.js";
-import type { JwtPayload } from "jsonwebtoken";
 
-interface AuthenticatedRequest extends Request {
-  user?: JwtPayload;
-}
-
-export default function (
-  req: AuthenticatedRequest,
-  res: Response,
-  next: NextFunction
-) {
+export default function (req: Request, res: Response, next: NextFunction) {
   const authToken = req.cookies.authentication;
 
   if (!authToken) {
@@ -25,6 +16,8 @@ export default function (
     return;
   }
 
-  req.user = authToken;
+  console.log(`decoded token`, result);
+
+  req.userId = result.value?.user;
   next();
 }
