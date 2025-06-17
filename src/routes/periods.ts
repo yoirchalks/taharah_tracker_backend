@@ -24,6 +24,24 @@ router.get("/", [authMiddleware], async (req: Request, res: Response) => {
   res.send(periods);
 });
 
+router.get("/:id", authMiddleware, async (req: Request, res: Response) => {
+  const userId = req.userId;
+  const periodId = req.params.id;
+  const period = await prisma.periods.findUnique({
+    where: {
+      id: parseInt(periodId),
+      userId,
+    },
+  });
+  if (!period) {
+    res
+      .status(404)
+      .send(`no period with id ${periodId} found for user with id ${userId}`);
+    return;
+  }
+  res.send(period);
+});
+
 router.post("/", async (req: Request, res: Response) => {});
 
 router.delete("/:id", async (req: Request, res: Response) => {});
