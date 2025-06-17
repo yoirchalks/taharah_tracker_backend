@@ -115,5 +115,5 @@
   "ts-node": {
     "esm": true
   },
-  "include": ["src"]
+  "include": ["src", "src/types/global.d.ts"]
 }
