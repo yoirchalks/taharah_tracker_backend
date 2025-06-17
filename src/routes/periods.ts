@@ -82,6 +82,4 @@ router.delete("/:id", async (req: Request, res: Response) => {
 
 router.put("/:id", async (req: Request, res: Response) => {});
 
-router.get("/:id", async (req: Request, res: Response) => {});
-
 export default router;
