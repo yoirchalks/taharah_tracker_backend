@@ -39,7 +39,7 @@ router.post("/", async (req: Request, res: Response) => {
         return;
       }
 
-      const jwt = signJwt({ user: user.id });
+      const jwt = signJwt({ uuid: user.id });
       res
         .cookie("authentication", jwt, {
           secure: true,
@@ -48,7 +48,7 @@ router.post("/", async (req: Request, res: Response) => {
           httpOnly: true,
         })
         .status(204)
-        .send();
+        .send(); //TODO: OTP is currently sent in res. must remove this and לכאורה only need send otp id so i can query db using it.
     }
 
     if (data.requestingOtp) {
@@ -62,7 +62,9 @@ router.post("/", async (req: Request, res: Response) => {
         },
       });
       sendEmail(data.email, Otp);
-      res.status(200).send(generatedOtp);
+      res
+        .status(200)
+        .send({ otpId: generatedOtp.id, userId: generatedOtp.userId });
     }
   } catch (error) {
     console.log("error", error);
