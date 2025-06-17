@@ -92,7 +92,7 @@ model FixedVesets {
 }
 
 model Locations {
-  location String
+  location String @id
   code     Int    @unique(map: "Location_code_key")
 }
 
