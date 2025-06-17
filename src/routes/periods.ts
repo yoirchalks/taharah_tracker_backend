@@ -2,16 +2,13 @@ import express from "express";
 import type { Request, Response } from "express";
 import { prisma } from "../utils/prismaClient.js";
 import authMiddleware from "../middlewares/jwt.middleware.js";
+import getPrismaUserById from "../utils/getPrismaUser.js";
 
 const router = express.Router();
 
 router.get("/", [authMiddleware], async (req: Request, res: Response) => {
   const userId = req.userId;
-  const user = await prisma.users.findUnique({
-    where: {
-      id: userId,
-    },
-  });
+  const user = await getPrismaUserById(userId);
   if (!user) {
     res.status(404).send(`user with id ${userId} not found`);
     return;
@@ -42,16 +39,15 @@ router.get("/:id", authMiddleware, async (req: Request, res: Response) => {
   res.send(period);
 });
 
-router.post("/", authMiddleware, async (req: Request, res: Response) => {});
+router.post("/", authMiddleware, async (req: Request, res: Response) => {
+  const userId = req.userId;
+  const user = await getPrismaUserById(userId);
+});
 
 router.delete("/:id", async (req: Request, res: Response) => {
   const userId = req.userId;
   const periodId = req.params.id;
-  const user = await prisma.users.findUnique({
-    where: {
-      id: userId,
-    },
-  });
+  const user = await getPrismaUserById(userId);
   if (!user) {
     res.status(404).send(`no user found with id of ${userId}`);
     return;
