@@ -16,21 +16,21 @@ export function signJwt(data: any, expirationLength?: number) {
   return sign(data, JWT_SECRET, options);
 }
 
-export function decodeJwt(token: string):
-  | JwtPayload
-  | {
-      valid: boolean;
-      reason: string;
-    } {
+export function decodeJwt(token: string): {
+  valid: boolean;
+  value?: JwtPayload;
+  reason?: string;
+} {
   try {
-    return verify(token, JWT_SECRET) as JwtPayload;
+    const decoded = verify(token, JWT_SECRET) as JwtPayload;
+    return { valid: true, value: decoded };
   } catch (err: unknown) {
     if (err instanceof JsonWebTokenError) {
       return { valid: false, reason: "invalid token provided" };
     } else if (err instanceof TokenExpiredError) {
       return { valid: false, reason: "token expired" };
     } else {
-      return { valid: false, reason: "unknown" };
+      return { valid: false, reason: "unknown error decoding token" };
     }
   }
 }
