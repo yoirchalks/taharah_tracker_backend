@@ -16,8 +16,6 @@ export default function (req: Request, res: Response, next: NextFunction) {
     return;
   }
 
-  console.log(`decoded token`, result);
-
   req.userId = result.value?.user;
   next();
 }
