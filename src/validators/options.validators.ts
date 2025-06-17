@@ -1,7 +1,6 @@
 import Joi from "joi";
 
 const postSchema = Joi.object({
-  userId: Joi.string().required(),
   location: Joi.string().required(),
   receiveAlerts: Joi.boolean().required(),
 });
