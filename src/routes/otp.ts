@@ -1,6 +1,6 @@
 import express from "express";
 import type { Request, Response } from "express";
-import { prisma } from "../utils/prismaClient.js";
+import { prisma } from "../startup/prismaClient.js";
 import otpValidator from "../validators/otp.validators.js";
 import { signJwt } from "../utils/jwt.js";
 

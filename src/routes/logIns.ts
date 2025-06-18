@@ -1,7 +1,7 @@
 import express from "express";
 import type { Request, Response } from "express";
 import logInsValidators from "../validators/logIns.validators.js";
-import { prisma } from "../utils/prismaClient.js";
+import { prisma } from "../startup/prismaClient.js";
 import { unHash } from "../utils/hashPassword.js";
 import hashEmail from "../utils/hashEmail.js";
 import { signJwt } from "../utils/jwt.js";

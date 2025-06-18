@@ -2,7 +2,7 @@ import express from "express";
 
 import authMiddleware from "../middlewares/jwt.middleware.js";
 import getPrismaUserById from "../utils/getPrismaUser.js";
-import { prisma } from "../utils/prismaClient.js";
+import { prisma } from "../startup/prismaClient.js";
 import validator from "../validators/periods.validators.js";
 
 import type { Request, Response } from "express";
