@@ -7,6 +7,7 @@ import { prisma } from "../startup/prismaClient.js";
 import validator from "../validators/periods.validators.js";
 
 import type { Request, Response } from "express";
+import { ComplexZmanimCalendar, GeoLocation } from "kosher-zmanim";
 
 const router = express.Router();
 
@@ -63,9 +64,17 @@ router.post("/", authMiddleware, async (req: Request, res: Response) => {
     res.status(422).send(`user must have options and location set to proceed.`);
     return;
   }
+<<<<<<< HEAD
 
   const jewishDate = new JewishDate(new Date());
   res.send(jewishDate);
+=======
+  const gregDate = new Date(date);
+  // const shkiah =
+  // console.log(shkiah);
+
+  res.send(`hi`);
+>>>>>>> main
 });
 
 //TODO: replace 403 codes for 401 with invalid JWTs
