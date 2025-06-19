@@ -1,6 +1,6 @@
 import { GeoDb } from "@hebcal/geo-sqlite";
 
-let locationDb: any;
+let locationDb: GeoDb | null = null;
 
 export function initGeoDb() {
   locationDb = new GeoDb(console, "zips.sqlite3", "geonames.sqlite3");
@@ -14,7 +14,7 @@ export function initGeoDb() {
   });
 
   process.on("beforeExit", () => {
-    locationDb.close();
+    cleanup();
   });
 }
 
