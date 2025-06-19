@@ -2,6 +2,7 @@ import express from "express";
 
 import authMiddleware from "../middlewares/jwt.middleware.js";
 import getPrismaUserById from "../utils/getPrismaUser.js";
+import kosherZmanim, { JewishDate } from "kosher-zmanim";
 import { prisma } from "../startup/prismaClient.js";
 import validator from "../validators/periods.validators.js";
 
@@ -50,6 +51,8 @@ router.post("/", authMiddleware, async (req: Request, res: Response) => {
   const { date, time, type } = req.body;
 
   const userId = req.userId;
+  console.log(userId);
+
   const user = await getPrismaUserById(userId);
   const userOptions = await prisma.options.findUnique({
     where: {
@@ -58,8 +61,11 @@ router.post("/", authMiddleware, async (req: Request, res: Response) => {
   });
   if (!userOptions || !userOptions.location) {
     res.status(422).send(`user must have options and location set to proceed.`);
+    return;
   }
-  res.send(`hi`);
+
+  const jewishDate = new JewishDate(new Date());
+  res.send(jewishDate);
 });
 
 //TODO: replace 403 codes for 401 with invalid JWTs
