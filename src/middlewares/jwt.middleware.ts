@@ -10,12 +10,15 @@ export default function (req: Request, res: Response, next: NextFunction) {
   }
 
   const result = decodeJwt(authToken);
+  console.log("result: ", result);
 
   if (!result.valid) {
     res.status(401).send(result.reason);
     return;
   }
 
-  req.userId = result.value?.user;
+  req.userId = result.value?.uuid;
+  console.log("middleware:", req.userId);
+
   next();
 }
