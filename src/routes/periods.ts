@@ -6,6 +6,7 @@ import { prisma } from "../startup/prismaClient.js";
 import validator from "../validators/periods.validators.js";
 
 import type { Request, Response } from "express";
+import { ComplexZmanimCalendar, GeoLocation } from "kosher-zmanim";
 
 const router = express.Router();
 
@@ -59,6 +60,10 @@ router.post("/", authMiddleware, async (req: Request, res: Response) => {
   if (!userOptions || !userOptions.location) {
     res.status(422).send(`user must have options and location set to proceed.`);
   }
+  const gregDate = new Date(date);
+  // const shkiah =
+  // console.log(shkiah);
+
   res.send(`hi`);
 });
 
