@@ -2,13 +2,11 @@ import express from "express";
 
 import authMiddleware from "../middlewares/jwt.middleware.js";
 import getPrismaUserById from "../utils/getPrismaUser.js";
-import kosherZmanim, { JewishDate } from "kosher-zmanim";
 import { prisma } from "../startup/prismaClient.js";
 import validator from "../validators/periods.validators.js";
 
 import type { Request, Response } from "express";
-import { ComplexZmanimCalendar, GeoLocation } from "kosher-zmanim";
-
+import callDb from "../utils/getLocationFromDb.js";
 const router = express.Router();
 
 router.get("/", authMiddleware, async (req: Request, res: Response) => {
@@ -52,7 +50,6 @@ router.post("/", authMiddleware, async (req: Request, res: Response) => {
   const { date, time, type } = req.body;
 
   const userId = req.userId;
-  console.log(userId);
 
   const user = await getPrismaUserById(userId);
   const userOptions = await prisma.options.findUnique({
@@ -64,17 +61,19 @@ router.post("/", authMiddleware, async (req: Request, res: Response) => {
     res.status(422).send(`user must have options and location set to proceed.`);
     return;
   }
-<<<<<<< HEAD
 
-  const jewishDate = new JewishDate(new Date());
-  res.send(jewishDate);
-=======
-  const gregDate = new Date(date);
-  // const shkiah =
-  // console.log(shkiah);
+  const locationId = await prisma.locations.findUnique({
+    where: {
+      location: userOptions.location,
+    },
+    select: {
+      code: true,
+    },
+  });
 
-  res.send(`hi`);
->>>>>>> main
+  const { latitude, longitude } = await callDb(locationId!.code);
+
+  res.send({ latitude, longitude });
 });
 
 //TODO: replace 403 codes for 401 with invalid JWTs
