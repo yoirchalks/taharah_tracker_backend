@@ -25,4 +25,6 @@ function cleanup() {
   }
 }
 
-export default locationDb;
+export function getLocationDb(): GeoDb | null {
+  return locationDb;
+}
