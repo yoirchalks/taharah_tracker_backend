@@ -26,5 +26,8 @@ function cleanup() {
 }
 
 export function getLocationDb(): GeoDb | null {
+  if (locationDb === null) {
+    throw Error("db not initialized");
+  }
   return locationDb;
 }
