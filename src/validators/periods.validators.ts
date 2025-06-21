@@ -1,12 +1,7 @@
 import Joi from "joi";
-import { PeriodType } from "@prisma/client";
-
-const periodTypes = Object.values(PeriodType);
 
 const postSchema = Joi.object({
-  periodType: Joi.string()
-    .valid(...periodTypes)
-    .required(),
+  periodType: Joi.string().required(),
   date: Joi.string()
     .required()
     .pattern(/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/),
