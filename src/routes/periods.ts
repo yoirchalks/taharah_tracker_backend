@@ -6,7 +6,9 @@ import { prisma } from "../startup/prismaClient.js";
 import validator from "../validators/periods.validators.js";
 
 import type { Request, Response } from "express";
-import callDb from "../utils/getLocationFromDb.js";
+import getJsDate from "../utils/getJsDate.js";
+import { Location } from "@hebcal/core";
+
 const router = express.Router();
 
 router.get("/", authMiddleware, async (req: Request, res: Response) => {
@@ -48,6 +50,7 @@ router.post("/", authMiddleware, async (req: Request, res: Response) => {
     res.status(400).send(result.error.details[0].message);
   }
   const { date, time, type } = req.body;
+  const jsDate = getJsDate(date);
 
   const userId = req.userId;
 
@@ -70,10 +73,8 @@ router.post("/", authMiddleware, async (req: Request, res: Response) => {
       code: true,
     },
   });
-
-  const { latitude, longitude } = await callDb(locationId!.code);
-
-  res.send({ latitude, longitude });
+  const loc = new Location("Jerusalem", 31.778, 35.235, 2);
+  type Test = typeof loc;
 });
 
 //TODO: replace 403 codes for 401 with invalid JWTs
