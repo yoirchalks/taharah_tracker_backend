@@ -7,7 +7,7 @@ import validator from "../validators/periods.validators.js";
 
 import type { Request, Response } from "express";
 import getJsDate from "../utils/getJsDate.js";
-import { Location } from "@hebcal/core";
+import { getLocationFromId } from "../utils/getLocationFromDb.js";
 
 const router = express.Router();
 
@@ -51,9 +51,7 @@ router.post("/", authMiddleware, async (req: Request, res: Response) => {
   }
   const { date, time, type } = req.body;
   const jsDate = getJsDate(date);
-
   const userId = req.userId;
-
   const user = await getPrismaUserById(userId);
   const userOptions = await prisma.options.findUnique({
     where: {
@@ -64,7 +62,6 @@ router.post("/", authMiddleware, async (req: Request, res: Response) => {
     res.status(422).send(`user must have options and location set to proceed.`);
     return;
   }
-
   const locationId = await prisma.locations.findUnique({
     where: {
       location: userOptions.location,
@@ -73,8 +70,9 @@ router.post("/", authMiddleware, async (req: Request, res: Response) => {
       code: true,
     },
   });
-  const loc = new Location("Jerusalem", 31.778, 35.235, 2);
-  type Test = typeof loc;
+  const hebcalLoc = await getLocationFromId(locationId!.code);
+  console.log(hebcalLoc);
+  res.send(hebcalLoc);
 });
 
 //TODO: replace 403 codes for 401 with invalid JWTs

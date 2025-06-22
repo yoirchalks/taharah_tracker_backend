@@ -12,10 +12,6 @@ export function initGeoDb() {
   process.on("SIGTERM", () => {
     cleanup();
   });
-
-  process.on("beforeExit", () => {
-    cleanup();
-  });
 }
 
 function cleanup() {
@@ -29,5 +25,7 @@ export function getLocationDb(): GeoDb | null {
   if (locationDb === null) {
     throw Error("db not initialized");
   }
+  console.log(typeof locationDb);
+
   return locationDb;
 }
