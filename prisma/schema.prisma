@@ -35,7 +35,7 @@ model Options {
 model Periods {
   id                   Int               @id @default(autoincrement())
   userId               String
-  input_date           String
+  input_dateTime       DateTime
   hebrew_day           Int
   hebrew_month         Int
   hebrew_year          Int
