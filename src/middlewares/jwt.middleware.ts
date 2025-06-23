@@ -16,6 +16,7 @@ export default function (req: Request, res: Response, next: NextFunction) {
     return;
   }
 
-  req.userId = result.value?.user;
+  req.userId = result.value?.uuid;
+
   next();
 }

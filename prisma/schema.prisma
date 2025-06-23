@@ -35,12 +35,13 @@ model Options {
 model Periods {
   id                   Int               @id @default(autoincrement())
   userId               String
-  input_date_time      DateTime
+  period_dateTime      DateTime
   hebrew_day           Int
   hebrew_month         Int
   hebrew_year          Int
   onah                 Onah
   type                 PeriodType
+  locationCode         Int
   notes                String?
   created_at           DateTime          @default(now())
   period_fixed_veset_1 FixedVesets?      @relation("FixedVesetPeriod1")
@@ -68,7 +69,7 @@ model PotentialVesets {
   userId           String
   type             VesetType
   periodId         Int
-  expectedDateTime DateTime
+  expectedDate     String
   onah             Onah
   notes            String?
   createdAt        DateTime  @default(now())
@@ -113,7 +114,8 @@ enum Onah {
 enum PeriodType {
   period
   staining
-  birth
+  birthBoy
+  birthGirl
   miscarriage
 }
 
