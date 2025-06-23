@@ -35,7 +35,7 @@ model Options {
 model Periods {
   id                   Int               @id @default(autoincrement())
   userId               String
-  input_dateTime       DateTime
+  period_dateTime       DateTime
   hebrew_day           Int
   hebrew_month         Int
   hebrew_year          Int
@@ -113,7 +113,8 @@ enum Onah {
 enum PeriodType {
   period
   staining
-  birth
+  birthBoy
+  birthGirl
   miscarriage
 }
 
