@@ -35,12 +35,13 @@ model Options {
 model Periods {
   id                   Int               @id @default(autoincrement())
   userId               String
-  period_dateTime       DateTime
+  period_dateTime      DateTime
   hebrew_day           Int
   hebrew_month         Int
   hebrew_year          Int
   onah                 Onah
   type                 PeriodType
+  locationCode         Int
   notes                String?
   created_at           DateTime          @default(now())
   period_fixed_veset_1 FixedVesets?      @relation("FixedVesetPeriod1")

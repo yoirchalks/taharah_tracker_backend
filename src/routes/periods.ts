@@ -49,6 +49,7 @@ router.post("/", authMiddleware, async (req: Request, res: Response) => {
 
   if (result.error) {
     res.status(400).send(result.error.details[0].message);
+    return;
   }
   const { dateTime, periodType } = req.body;
   const jsDateTime = new Date(dateTime);
@@ -84,6 +85,7 @@ router.post("/", authMiddleware, async (req: Request, res: Response) => {
   const hebDate = new HDate(jsDateTime);
   const period = await prisma.periods.create({
     data: {
+      locationCode: locationId!.code,
       onah,
       hebrew_day: hebDate.getDate(),
       hebrew_month: hebDate.getMonth(),

@@ -3,7 +3,7 @@ import Joi from "joi";
 const postSchema = Joi.object({
   periodType: Joi.string()
     .required()
-    .valid("period", "birth", "birthBoy", "birthGirl", "miscarriage"),
+    .valid("period", "staining", "birthBoy", "birthGirl", "miscarriage"),
   dateTime: Joi.string()
     .required()
     .pattern(
