@@ -1,6 +1,5 @@
 import type { GeoDb } from "@hebcal/geo-sqlite";
 import { getLocationDb } from "../startup/geoDb.js";
-import { Location } from "@hebcal/core/dist/esm/location";
 import { GeoLocation } from "@hebcal/core";
 
 export default async function getLocationFromDb(geoNameId: number) {
