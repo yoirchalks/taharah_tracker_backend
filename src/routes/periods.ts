@@ -2,13 +2,13 @@ import express from "express";
 
 import authMiddleware from "../middlewares/jwt.middleware.js";
 import getPrismaUserById from "../utils/getPrismaUser.js";
+import { getLocationFromId } from "../utils/getLocationFromDb.js";
 import { prisma } from "../startup/prismaClient.js";
 import validator from "../validators/periods.validators.js";
 
 import type { Request, Response } from "express";
-import getJsDate from "../utils/getJsDate.js";
-import { getLocationFromId } from "../utils/getLocationFromDb.js";
-
+import { Zmanim } from "@hebcal/core/dist/esm/zmanim";
+import { HDate } from "@hebcal/hdate/dist/esm/hdate";
 const router = express.Router();
 
 router.get("/", authMiddleware, async (req: Request, res: Response) => {
@@ -46,11 +46,12 @@ router.get("/:id", authMiddleware, async (req: Request, res: Response) => {
 
 router.post("/", authMiddleware, async (req: Request, res: Response) => {
   const result = validator(req.body, "post");
+
   if (result.error) {
     res.status(400).send(result.error.details[0].message);
   }
-  const { date, time, type } = req.body;
-  const jsDate = getJsDate(date);
+  const { dateTime, periodType } = req.body;
+  const jsDateTime = new Date(dateTime);
   const userId = req.userId;
   const user = await getPrismaUserById(userId);
   const userOptions = await prisma.options.findUnique({
@@ -71,8 +72,28 @@ router.post("/", authMiddleware, async (req: Request, res: Response) => {
     },
   });
   const hebcalLoc = await getLocationFromId(locationId!.code);
-  console.log(hebcalLoc);
-  res.send(hebcalLoc);
+  const zmanim = new Zmanim(hebcalLoc, jsDateTime, true);
+  const time = jsDateTime.getTime();
+  let onah: "day" | "night" = "day";
+  if (time > zmanim.sunset().getTime()) {
+    onah = "night";
+    jsDateTime.setDate(jsDateTime.getDate() + 1);
+  } else if (time < zmanim.sunrise().getTime()) {
+    onah = "night";
+  }
+  const hebDate = new HDate(jsDateTime);
+  const period = await prisma.periods.create({
+    data: {
+      onah,
+      hebrew_day: hebDate.getDate(),
+      hebrew_month: hebDate.getMonth(),
+      hebrew_year: hebDate.getFullYear(),
+      period_dateTime: jsDateTime,
+      type: periodType,
+      userId, //TODO:should i add days in month to db? might be easier then calculating elsewhere. already have it here.
+    },
+  });
+  res.send(period);
 });
 
 //TODO: replace 403 codes for 401 with invalid JWTs
