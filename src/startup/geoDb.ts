@@ -7,10 +7,12 @@ export function initGeoDb() {
 
   process.on("SIGINT", () => {
     cleanup();
+    process.exit();
   });
 
   process.on("SIGTERM", () => {
     cleanup();
+    process.exit();
   });
 }
 
@@ -25,7 +27,5 @@ export function getLocationDb(): GeoDb | null {
   if (locationDb === null) {
     throw Error("db not initialized");
   }
-  console.log(typeof locationDb);
-
   return locationDb;
 }
