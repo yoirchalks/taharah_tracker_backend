@@ -21,6 +21,7 @@ router.post("/", async (req: Request, res: Response) => {
       id,
     },
   });
+
   if (!storedOtp) {
     res.status(404).send(`no OTP found with id ${id}`);
     return;
@@ -29,11 +30,13 @@ router.post("/", async (req: Request, res: Response) => {
     res.status(403).send(`OTP incorrect`);
   }
   const now = new Date().getTime();
-  if (storedOtp.iat.getTime() + 1000 * 60 * 10 > now) {
+  if (storedOtp.iat.getTime() + 1000 * 60 * 10 < now) {
     res.status(403).send(`OTP expires`);
+    return;
   }
   if (storedOtp.used === true) {
     res.status(403).send(`OTP already used`);
+    return;
   }
   if (storedOtp.userId !== userId) {
     res.status(409).send(`otp ${OTP} not associated with user ${userId}`);
