@@ -17,6 +17,8 @@ model Users {
   email_tag       String
   email_hash      String            @unique
   password_hash   String
+  currentStatus   Status    @default(tahor)
+  statusUntil     DateTime?
   fixed_veset     FixedVesets?
   options         Options?
   payments        Payments[]
@@ -117,6 +119,14 @@ enum PeriodType {
   birthBoy
   birthGirl
   miscarriage
+}
+
+enum Status{
+  tahor
+  fiveDays
+  tomei
+  afterBirth
+  sevenClean
 }
 
 enum PaymentMethod {
