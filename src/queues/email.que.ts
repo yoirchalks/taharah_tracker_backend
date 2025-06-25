@@ -9,4 +9,4 @@ const connection = new Redis(process.env.REDIS_URL!, {
   tls: {},
 });
 
-export const emailQueue = new Queue("send_otp", { connection });
+export const emailQueue = new Queue("taharah_tracker_email", { connection });
