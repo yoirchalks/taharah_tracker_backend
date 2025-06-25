@@ -5,8 +5,6 @@ export default function (req: Request, res: Response, next: NextFunction) {
   const authToken = req.cookies.authentication;
 
   if (!authToken) {
-    console.log("no auth token called");
-
     if (req.originalUrl === "/api/logOut") {
       console.log(" logOut called");
 
