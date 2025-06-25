@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon --watch src --ext ts --exec \"npm run build && node dist/index.js\"",
+    "dev:worker": "nodemon --watch src --ext ts --exec \"npm run build && node dist/workers/email.worker.js\"",
     "build": "tsc",
     "start": "node dist/index.js"
   },
@@ -21,6 +22,7 @@
     "@types/jsonwebtoken": "^9.0.9",
     "@types/node": "^22.15.30",
     "@types/nodemailer": "^6.4.17",
+    "@types/ioredis": "^4.28.10",
     "nodemon": "^3.1.10",
     "prisma": "^6.9.0",
     "ts-node": "^10.9.2",
@@ -36,10 +38,10 @@
     "cookie-parser": "^1.4.7",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
+    "ioredis": "^5.6.1",
     "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
     "nodemailer": "^7.0.3",
-    "pino": "^9.7.0",
-    "redis": "^5.5.6"
+    "pino": "^9.7.0"
   }
 }
