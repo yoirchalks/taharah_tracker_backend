@@ -56,6 +56,7 @@ async function handlePeriod(req: Request, res: Response, dateTime: Date) {
   ) {
     const updatedUser = resetSevenDays(userId, jsDateTime);
     res.send({ message: `seven days restarted`, updatedUser });
+    return;
   }
 
   const period = await prisma.periods.create({
