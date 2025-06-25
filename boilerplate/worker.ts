@@ -1,7 +1,6 @@
 import { Redis } from "ioredis";
 import { Worker } from "bullmq";
 import dotenv from "dotenv";
-import placeholder from "../utils/placeholder.js"; //change as appropriate
 
 dotenv.config();
 
