@@ -7,6 +7,7 @@ import hashEmail from "../utils/hashEmail.js";
 import { signJwt } from "../utils/jwt.js";
 import createOtp from "../utils/generateOtp.js";
 import sendEmail from "../utils/sendEmail.js";
+import { emailQueue } from "../queues/email.que.js";
 
 const router = express.Router();
 
@@ -61,7 +62,10 @@ router.post("/", async (req: Request, res: Response) => {
           userId: user.id,
         },
       });
-      sendEmail(data.email, Otp);
+      emailQueue.add("send_otp", {
+        address: data.email,
+        OTP: Otp,
+      });
       res
         .status(200)
         .send({ otpId: generatedOtp.id, userId: generatedOtp.userId });
