@@ -19,8 +19,10 @@ const eventWorker = new Worker(
   "taharah_tracker_periods",
   async (job) => {
     if (job.name === "set_user_status") {
-      const { usersId, requiredStatus } = job.data;
-      updateUserStatus(usersId, requiredStatus);
+      const { userId, requiredStatus } = job.data;
+      console.log(userId, requiredStatus);
+
+      updateUserStatus(userId, requiredStatus);
     }
   },
   { connection, removeOnComplete: { age: 60 * 20, count: 5 } }
