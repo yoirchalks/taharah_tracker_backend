@@ -8,3 +8,5 @@ const connection = new Redis(process.env.REDIS_URL!, {
   maxRetriesPerRequest: null,
   tls: {},
 });
+
+export const addEventQue = new Queue("check_and_add_events", { connection });
