@@ -123,7 +123,7 @@ enum PeriodType {
 
 enum Status{
   tahor
-  fiveDays
+  beforeHefsek
   tomei
   afterBirth
   sevenClean
