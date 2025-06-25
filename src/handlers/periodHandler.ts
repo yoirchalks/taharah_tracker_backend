@@ -4,6 +4,7 @@ import { getLocationFromId } from "../utils/getLocationFromDb.js";
 import { Zmanim } from "@hebcal/core/dist/esm/zmanim";
 import resetSevenDays from "../utils/resetSevenClean.js";
 import { HDate } from "@hebcal/hdate/dist/esm/hdate";
+import { periodDataQue } from "../queues/periods.que.js";
 
 async function handlePeriod(req: Request, res: Response, dateTime: Date) {
   const status = await prisma.users.findUnique({
@@ -70,6 +71,10 @@ async function handlePeriod(req: Request, res: Response, dateTime: Date) {
       type: "period",
       userId, //TODO:should i add days in month to db? might be easier then calculating elsewhere. already have it here.
     },
+  });
+  periodDataQue.add("set_user_status", {
+    userId,
+    requiredStatus: "beforeHefsek",
   });
   res.send(period);
 }
