@@ -1,4 +1,4 @@
-import { prisma } from "../startup/prismaClient.js";
+import { prisma } from "../../startup/prismaClient.js";
 
 export default async function updateUserStatus(
   userId: string,

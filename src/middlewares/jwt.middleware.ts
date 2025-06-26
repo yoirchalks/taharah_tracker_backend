@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
-import { decodeJwt } from "../utils/jwt.js";
+import { decodeJwt } from "../utils/security/jwt.js";
 
 export default function (req: Request, res: Response, next: NextFunction) {
   const authToken = req.cookies.authentication;

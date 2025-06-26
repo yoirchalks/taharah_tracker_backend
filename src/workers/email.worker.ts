@@ -1,7 +1,7 @@
 import { Redis } from "ioredis";
 import { Worker } from "bullmq";
 import dotenv from "dotenv";
-import sendEmail from "../utils/sendEmail.js";
+import sendEmail from "../utils/email/sendEmail.js";
 
 dotenv.config();
 

@@ -2,7 +2,7 @@ import express from "express";
 import type { Request, Response } from "express";
 import { prisma } from "../startup/prismaClient.js";
 import otpValidator from "../validators/otp.validators.js";
-import { signJwt } from "../utils/jwt.js";
+import { signJwt } from "../utils/security/jwt.js";
 
 const router = express.Router();
 

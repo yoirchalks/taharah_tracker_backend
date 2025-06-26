@@ -1,10 +1,11 @@
+import { encrypt } from "../utils/security/encryption.js";
 import express from "express";
-import type { Request, Response } from "express";
-import { encrypt } from "../utils/encryption.js";
-import userValidator from "../validators/users.validators.js";
+import hashEmail from "../utils/security/hashEmail.js";
+import * as hash from "../utils/security/hashPassword.js";
 import { prisma } from "../startup/prismaClient.js";
-import * as hash from "../utils/hashPassword.js";
-import hashEmail from "../utils/hashEmail.js";
+import userValidator from "../validators/users.validators.js";
+
+import type { Request, Response } from "express";
 
 const router = express.Router();
 

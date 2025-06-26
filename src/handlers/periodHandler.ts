@@ -1,8 +1,8 @@
 import type { Request, Response } from "express";
 import { prisma } from "../startup/prismaClient.js";
-import { getLocationFromId } from "../utils/getLocationFromDb.js";
+import { getLocationFromId } from "../utils/db/getLocationFromDb.js";
 import { Zmanim } from "@hebcal/core/dist/esm/zmanim";
-import resetSevenDays from "../utils/resetSevenClean.js";
+import resetSevenDays from "../utils/db/resetSevenClean.js";
 import { HDate } from "@hebcal/hdate/dist/esm/hdate";
 import { periodDataQue } from "../queues/periods.que.js";
 

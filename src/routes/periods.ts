@@ -1,7 +1,7 @@
 import express from "express";
 
 import authMiddleware from "../middlewares/jwt.middleware.js";
-import getPrismaUserById from "../utils/getPrismaUser.js";
+import getPrismaUserById from "../utils/db/getPrismaUser.js";
 import { prisma } from "../startup/prismaClient.js";
 import validator from "../validators/periods.validators.js";
 

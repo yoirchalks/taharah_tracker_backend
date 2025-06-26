@@ -2,7 +2,7 @@ import { Redis } from "ioredis";
 import { Worker } from "bullmq";
 import dotenv from "dotenv";
 import { prisma } from "../startup/prismaClient.js";
-import updateUserStatus from "../utils/updateUserStatus.js";
+import updateUserStatus from "../utils/db/updateUserStatus.js";
 
 dotenv.config();
 
@@ -20,8 +20,6 @@ const eventWorker = new Worker(
   async (job) => {
     if (job.name === "set_user_status") {
       const { userId, requiredStatus } = job.data;
-      console.log(userId, requiredStatus);
-
       updateUserStatus(userId, requiredStatus);
     }
   },
