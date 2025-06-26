@@ -121,7 +121,7 @@ enum PeriodType {
   miscarriage
 }
 
-enum Status{
+enum Status { //problem that a woman can be both after birth (not קובע) and also טמא
   tahor
   beforeHefsek
   tomei
