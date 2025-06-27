@@ -7,6 +7,7 @@ import otpRouter from "../routes/otp.js";
 import periodsRouter from "../routes/periods.js";
 import signUpRoute from "../routes/signUps.js";
 import logOutRouter from "../routes/logOut.js";
+import emailsRouter from "../routes/emails.js";
 
 export default function routes(app: Application): void {
   app.use("/api/signUps", signUpRoute);
@@ -16,4 +17,5 @@ export default function routes(app: Application): void {
   app.use("/api/periods", periodsRouter);
   app.use("/api/options", optionsRouter);
   app.use("/api/logOut", logOutRouter);
+  app.use("/api/emails", emailsRouter);
 }
