@@ -11,16 +11,18 @@ router.post("/", async (req: Request, res: Response) => {
   console.log("called");
 
   if (result.error) {
+    console.log(result.error.details[0].message);
     res.status(400).send(result.error.details[0].message);
     return;
   }
+
   const emailHash = hashEmail(req.body.email);
   const matchingEmail = await prisma.users.findFirst({
     where: { email_hash: emailHash },
     select: { id: true },
   });
   if (matchingEmail) {
-    res.status(409).send({ unique: false });
+    res.send({ unique: false });
     return;
   }
   res.send({ unique: true });

@@ -7,7 +7,10 @@ const postSchema = Joi.object({
 });
 const putSchema = Joi.object({
   name: Joi.string().min(5).max(30),
-  email: Joi.string().email().min(10).max(30),
+  email: Joi.string()
+    .email({ tlds: { allow: false } })
+    .min(10)
+    .max(30),
   password: Joi.string().min(8).max(25),
 });
 

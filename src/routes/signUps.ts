@@ -16,6 +16,8 @@ interface Encryption {
 }
 
 router.post("/", async (req, res) => {
+  console.log("post called");
+
   const data = req.body;
   const result = userValidator(data, "post");
   if (result.error) {
