@@ -10,7 +10,7 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(
   cors({
-    origin: "http://localhost:4200",
+    origin: "https://taharah-tracker-frontend.onrender.com",
     credentials: true,
   })
 );
