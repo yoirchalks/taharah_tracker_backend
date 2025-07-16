@@ -8,7 +8,7 @@ import periodsRouter from "../routes/periods.js";
 import signUpRoute from "../routes/signUps.js";
 import logOutRouter from "../routes/logOut.js";
 import emailsRouter from "../routes/emails.js";
-
+import healthCheck from "../routes/healthCheck.js";
 export default function routes(app: Application): void {
   app.use("/api/signUps", signUpRoute);
   app.use("/api/locations", locationsRouter);
@@ -18,4 +18,5 @@ export default function routes(app: Application): void {
   app.use("/api/options", optionsRouter);
   app.use("/api/logOut", logOutRouter);
   app.use("/api/emails", emailsRouter);
+  app.use("/api/healthCheck", healthCheck);
 }
