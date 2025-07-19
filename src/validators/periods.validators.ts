@@ -1,5 +1,23 @@
 import Joi from "joi";
 
+const queryParamSchema = Joi.object({
+  startDate: Joi.string().default(() => new Date().toISOString()),
+  endDate: Joi.string().default(() => new Date().toISOString()),
+  page: Joi.number().default(1),
+  limit: Joi.number().min(1).max(100).default(10),
+});
+
+export interface QueryData {
+  startDate: string;
+  endDate: string;
+  page: number;
+  limit: number;
+}
+
+export const validateQueryParams = function (data: {}) {
+  return queryParamSchema.validate(data);
+};
+
 const postSchema = Joi.object({
   periodType: Joi.string()
     .required()
