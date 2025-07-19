@@ -10,7 +10,6 @@ import validator, {
 
 import type { Request, Response } from "express";
 import handlePeriod from "../handlers/periodHandler.js";
-import { addDays, startOfDay } from "date-fns";
 
 const router = express.Router();
 
@@ -41,8 +40,13 @@ router.get("/:id", authMiddleware, async (req: Request, res: Response) => {
     res.status(400).send(error.details[0].message);
   }
   const { startDate, endDate, limit, page } = value as QueryData;
-  const start = startOfDay(startDate);
-  const end = addDays(startOfDay(endDate), 1);
+  const start = new Date(startDate);
+  start.setHours(0, 0, 0, 0);
+
+  const end = new Date(endDate);
+  end.setHours(0, 0, 0, 0);
+  end.setDate(end.getDate() + 1);
+
   const skip = (page - 1) * limit;
 
   const periods = await prisma.periods.findMany({
