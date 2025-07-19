@@ -20,58 +20,53 @@ router.post("/", async (req: Request, res: Response) => {
 
   const hashedEmail = hashEmail(data.email);
 
-  try {
-    const user = await prisma.users.findUnique({
-      where: {
-        email_hash: hashedEmail,
-      },
-    });
-    if (!user) {
-      res.status(404).send(`no user registered with email ${data.email}`);
+  const user = await prisma.users.findUnique({
+    where: {
+      email_hash: hashedEmail,
+    },
+  });
+  if (!user) {
+    res.status(404).send(`no user registered with email ${data.email}`);
+    return;
+  }
+
+  if (data.password) {
+    const password = data.password;
+    const isPasswordValid = await unHash(user.password_hash, password);
+    if (!isPasswordValid) {
+      res.status(403).send("password incorrect");
       return;
     }
 
-    if (data.password) {
-      const password = data.password;
-      const isPasswordValid = await unHash(user.password_hash, password);
-      if (!isPasswordValid) {
-        res.status(403).send("password incorrect");
-        return;
-      }
+    const jwt = signJwt({ uuid: user.id });
+    res
+      .cookie("authentication", jwt, {
+        secure: true,
+        sameSite: "strict",
+        path: "/",
+        httpOnly: true,
+      })
+      .status(204)
+      .send(); //TODO: OTP is currently sent in res. must remove this and לכאורה only need send otp id so i can query db using it.
+  }
 
-      const jwt = signJwt({ uuid: user.id });
-      res
-        .cookie("authentication", jwt, {
-          secure: true,
-          sameSite: "strict",
-          path: "/",
-          httpOnly: true,
-        })
-        .status(204)
-        .send(); //TODO: OTP is currently sent in res. must remove this and לכאורה only need send otp id so i can query db using it.
-    }
+  if (data.requestingOtp) {
+    //TODO:forward user to front-end login page via link in email.
 
-    if (data.requestingOtp) {
-      //TODO:forward user to front-end login page via link in email.
-
-      const Otp = createOtp();
-      const generatedOtp = await prisma.otps.create({
-        data: {
-          OTP: Otp,
-          userId: user.id,
-        },
-      });
-      emailQueue.add("send_otp", {
-        address: data.email,
+    const Otp = createOtp();
+    const generatedOtp = await prisma.otps.create({
+      data: {
         OTP: Otp,
-      });
-      res
-        .status(200)
-        .send({ otpId: generatedOtp.id, userId: generatedOtp.userId });
-    }
-  } catch (error) {
-    console.log("error", error);
-    res.status(500).send("internal server error");
+        userId: user.id,
+      },
+    });
+    emailQueue.add("send_otp", {
+      address: data.email,
+      OTP: Otp,
+    });
+    res
+      .status(200)
+      .send({ otpId: generatedOtp.id, userId: generatedOtp.userId });
   }
 });
 

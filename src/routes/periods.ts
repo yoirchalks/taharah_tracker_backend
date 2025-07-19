@@ -3,10 +3,14 @@ import express from "express";
 import authMiddleware from "../middlewares/jwt.middleware.js";
 import getPrismaUserById from "../utils/db/getPrismaUser.js";
 import { prisma } from "../startup/prismaClient.js";
-import validator from "../validators/periods.validators.js";
+import validator, {
+  validateQueryParams,
+  type QueryData,
+} from "../validators/periods.validators.js";
 
 import type { Request, Response } from "express";
 import handlePeriod from "../handlers/periodHandler.js";
+import { addDays, startOfDay } from "date-fns";
 
 const router = express.Router();
 
@@ -26,21 +30,35 @@ router.get("/", authMiddleware, async (req: Request, res: Response) => {
 });
 
 router.get("/:id", authMiddleware, async (req: Request, res: Response) => {
-  const userId = req.userId;
-  const periodId = req.params.id;
-  const period = await prisma.periods.findUnique({
-    where: {
-      id: parseInt(periodId),
-      userId,
-    },
-  });
-  if (!period) {
-    res
-      .status(404)
-      .send(`no period with id ${periodId} found for user with id ${userId}`);
-    return;
+  const queryParams = {
+    startDate: req.query.startDate,
+    endDate: req.query.endDate,
+    page: parseInt(req.query.page! as string) | 1,
+    limit: parseInt(req.query.limit as string) | 10,
+  };
+  const { error, value } = validateQueryParams(queryParams);
+  if (error) {
+    res.status(400).send(error.details[0].message);
   }
-  res.send(period);
+  const { startDate, endDate, limit, page } = value as QueryData;
+  const start = startOfDay(startDate);
+  const end = addDays(startOfDay(endDate), 1);
+  const skip = (page - 1) * limit;
+
+  const periods = await prisma.periods.findMany({
+    where: {
+      userId: req.params.id,
+      period_dateTime: {
+        gte: start,
+        lt: end,
+      },
+    },
+    orderBy: { period_dateTime: "asc" },
+    skip,
+    take: limit,
+  });
+
+  res.send(periods);
 });
 
 router.post("/", authMiddleware, async (req: Request, res: Response) => {
