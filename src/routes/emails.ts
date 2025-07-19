@@ -8,7 +8,6 @@ const router = express.Router();
 
 router.post("/", async (req: Request, res: Response) => {
   const result = usersValidators(req.body, "put");
-  console.log("called");
 
   if (result.error) {
     console.log(result.error.details[0].message);
