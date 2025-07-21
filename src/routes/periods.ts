@@ -3,13 +3,14 @@ import express from "express";
 import authMiddleware from "../middlewares/jwt.middleware.js";
 import getPrismaUserById from "../utils/db/getPrismaUser.js";
 import { prisma } from "../startup/prismaClient.js";
+import handlePeriod from "../handlers/periodHandler.js";
 import validator, {
   validateQueryParams,
   type QueryData,
 } from "../validators/periods.validators.js";
+import _ from "lodash";
 
 import type { Request, Response } from "express";
-import handlePeriod from "../handlers/periodHandler.js";
 
 const router = express.Router();
 
@@ -61,6 +62,10 @@ router.get("/:id", authMiddleware, async (req: Request, res: Response) => {
     skip,
     take: limit,
   });
+
+  const filteredPeriods = _.map(periods, (period) =>
+    _.pick(period, ["id", "userId", "period_dateTime"])
+  );
 
   res.send(periods);
 });
