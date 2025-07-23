@@ -9,10 +9,11 @@ import { existsSync } from "fs";
 
 const envFile =
   process.env.NODE_ENV === "production" ? ".env" : ".env.development";
-if (existsSync(envFile)) {
-  dotenv.config({ path: envFile });
+
+if (process.env.NODE_ENV !== "production" && existsSync(".env")) {
+  dotenv.config();
 } else {
-  console.warn(`Warning: Environment file "${envFile}" not found.`);
+  console.log("Skipping dotenv config, relying on environment variables");
 }
 
 const app = express();
