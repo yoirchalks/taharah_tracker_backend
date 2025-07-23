@@ -5,8 +5,6 @@ import type { JwtPayload } from "jsonwebtoken";
 
 const { JsonWebTokenError, TokenExpiredError, sign, verify } = pkg;
 
-dotenv.config();
-
 const JWT_SECRET = process.env.JWT_SECRET!;
 
 export function signJwt(data: any, expirationLength?: number) {

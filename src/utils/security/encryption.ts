@@ -1,8 +1,6 @@
 import crypto from "crypto";
 import dotenv from "dotenv";
 
-dotenv.config();
-
 const algorithm = "aes-256-gcm";
 const key = Buffer.from(process.env.ENCRYPTION_KEY as string, "hex");
 

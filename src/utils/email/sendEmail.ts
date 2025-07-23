@@ -2,8 +2,6 @@ import nodemailer from "nodemailer";
 import fs from "fs/promises";
 import dotenv from "dotenv";
 
-dotenv.config();
-
 //TODO: create email address for app and update here.
 
 export default async function sendEmail(emailAddress: string, OTP: string) {

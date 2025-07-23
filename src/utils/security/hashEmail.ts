@@ -1,8 +1,6 @@
 import crypto from "crypto";
 import dotenv from "dotenv";
 
-dotenv.config({ path: "../.env" });
-
 const secretSalt = process.env.SHA_SECRET;
 
 export default function hashEmail(email: string) {
