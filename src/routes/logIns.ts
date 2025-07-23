@@ -47,7 +47,7 @@ router.post("/", async (req: Request, res: Response) => {
         httpOnly: true,
       })
       .status(204)
-      .send(); //TODO: OTP is currently sent in res. must remove this and לכאורה only need send otp id so i can query db using it.
+      .send({ userId: user.id }); //TODO: OTP is currently sent in res. must remove this and לכאורה only need send otp id so i can query db using it.
   }
 
   if (data.requestingOtp) {
