@@ -60,7 +60,7 @@ router.post("/", async (req: Request, res: Response) => {
       httpOnly: true,
     })
     .status(204)
-    .send();
+    .send({ userId });
 });
 
 export default router;
